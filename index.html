@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 94: Are you busy tonight? — онлайн-урок</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f8fc;--card:#fff;--ink:#23364a;--mute:#6b7f94;--line:#dbe6f0;--blue:#3b82d6;--blue-l:#e4f0fc;--green:#27a778;--green-l:#e0f6ec;--red:#e0566a;--red-l:#fde8eb;--sun:#ffb938;--sun-l:#fff4d9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Nunito,system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:2px solid var(--line);padding:10px 16px}
+.top{max-width:860px;margin:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top h1{font-size:1.1rem;margin:0;font-weight:800;flex:1;min-width:200px}
+.score{font-weight:800;background:var(--sun-l);border-radius:20px;padding:4px 14px}
+.bar{max-width:860px;margin:8px auto 0;height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .4s}
+nav{max-width:860px;margin:14px auto 0;padding:0 16px;display:flex;gap:8px;flex-wrap:wrap}
+nav button{font:inherit;font-weight:700;border:2px solid var(--line);background:#fff;color:var(--ink);padding:8px 16px;border-radius:14px;cursor:pointer}
+nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+nav button.full::after{content:" ✔"}
+main{max-width:860px;margin:auto;padding:14px 16px 60px}
+.panel{display:none}.panel.on{display:block}
+.intro{background:var(--blue-l);border-radius:16px;padding:14px 18px;margin-bottom:16px}
+.intro p{margin:4px 0}
+.ex{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:18px}
+.ex h2{margin:0;font-size:1.15rem}
+.ex .ins{color:var(--mute);margin:2px 0 10px}
+.ex .sc{float:right;font-weight:800;color:var(--blue)}
+.item{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.item .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--blue-l);color:var(--blue);font-weight:800;text-align:center;line-height:28px}
+.item .b{flex:1}.item .q{margin:0 0 6px}
+.blank{display:inline-block;width:70px;border-bottom:2px solid var(--ink);margin:0 3px}
+.ctl{display:flex;gap:8px;flex-wrap:wrap}
+.ctl button,.ctl input{font:inherit;border-radius:10px;border:2px solid var(--line);padding:6px 12px;background:#fff;color:var(--ink)}
+.ctl button{cursor:pointer;font-weight:600}
+.ctl button:hover:not(:disabled){border-color:var(--blue);background:var(--blue-l)}
+.ctl button:disabled{opacity:.45;cursor:default}
+.ctl .go{background:var(--blue);color:#fff;border-color:var(--blue)}
+.ctl input{min-width:200px}
+.fb{margin:4px 0 0;font-weight:600;min-height:1px}
+.item.ok .n{background:var(--green);color:#fff}.item.ok .fb{color:var(--green)}
+.item.bad .n{background:var(--red);color:#fff}.item.bad .fb{color:var(--red)}
+.card{background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:16px}
+.card h3{margin:0 0 6px}
+.who{background:var(--sun-l);border-radius:12px;padding:8px 12px;margin:8px 0}
+.ph{color:var(--blue);font-weight:600}
+.chk{display:flex;gap:10px;align-items:center;margin-top:10px;font-weight:700;cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--green)}
+.next{text-align:center;margin-top:8px;font-weight:800}
+.next button{font:inherit;font-weight:800;background:var(--green);color:#fff;border:none;border-radius:14px;padding:12px 24px;cursor:pointer}
+.next button:hover{filter:brightness(1.08)}
+.reset{background:none;border:none;color:var(--mute);text-decoration:underline;cursor:pointer;font:inherit}
+.np{color:var(--mute);font-weight:700;margin:8px 0 0}
+.rank{font-weight:800}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><h1>Unit 94: «Are you busy tonight?»</h1><span class="rank" id="rank"></span><span class="score">⭐ <span id="pts">0</span> / <span id="max">0</span></span></div>
+ <div class="bar"><i id="fill"></i></div>
+</header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<main style="padding-top:0;text-align:center"><button class="reset" id="reset">Почати спочатку (скинути бали)</button></main>
+<script>
+const E=(c,w)=>["Обери правильне речення.",[c],[c,w]];
+const M=(q,a,...o)=>[q,[a],[a,...o]];
+const TABS=[
+{id:'gr',name:'📅 Present Continuous',intro:'<p><b>am / is / are + дієслово з -ing</b> — для домовленого майбутнього: є час, день, квиток чи домовленість з кимось. <i>I am seeing my doctor tomorrow at 4 p.m.</i></p><p>🧠 Лайфхак: дія записана в щоденнику чи з кимось домовлена? Вживай Present Continuous — так само, як для дії прямо зараз!</p><p><b>Правопис -ing:</b> звичайні дієслова + -ing (go → going, see → seeing). Німе <b>-e</b> зникає (make → making, drive → driving). Короткі слова «приголосна-голосна-приголосна» подвоюють останню букву (run → running, get → getting).</p><p><b>Слова часу:</b> tonight, this evening, tomorrow, next week, on Friday, after school.</p>',ex:['g3','g4','g5']},
+{id:'vocab',name:'🧩 Vocabulary',intro:'<p>to have friends over — приймати гостей · to shoot a video — знімати відео · to see someone — зустрітись із кимось · to go to the mall — піти в ТРЦ · to go out — йти гуляти · to stay in — залишатися вдома · to go to a camp — поїхати в табір · to have a class / practice — мати урок / тренування · to sleep over at — ночувати в когось · to go to a birthday party — іти на день народження · to go on a field trip — поїхати на екскурсію · to take part in an academic competition — брати участь в олімпіаді · tonight — сьогодні ввечері · to hang out — гуляти з друзями · to show someone around — показувати місто · a schedule — розклад</p>',ex:['v1']},
+{id:'phr',name:'💬 Phrases',intro:'<p>🟢 <b>Спитати, чи вільний:</b> Are you busy tonight? · Are you free tonight? · What are you doing this evening?</p><p>🔵 <b>Запросити:</b> Would you like to go to the mall? · How about going out? · Why don\'t we shoot a video?</p><p>🟢 <b>Прийняти:</b> Sounds great! · It\'s a wonderful idea. · I\'d love to! · Nice idea.</p><p>🔴 <b>Відмовити:</b> Sorry, I can\'t. I have plans. · Sorry, I\'m staying in tonight. · I\'d love to, but I\'m busy.</p>',ex:['f2']},
+{id:'speak',name:'🎤 Speaking',intro:'<p>Працюй у парі. Усі завдання подано українською, а розмовляти треба англійською. Виконали завдання разом — познач галочку й отримай бали. Макро-сценарії й дискусії в кінці — без балів, для практики.</p>',ex:[]}
+];
+const EX={
+v1:{t:'Вправа 1. Слово в реченні',i:'Обери слово, яке підходить за змістом.',items:[
+M("We are staying in tonight because we want to ___ a video for our YouTube channel.","shoot","sleep","show"),
+M("Are you free this afternoon? Let\'s go to the ___ to buy some new clothes.","mall","schedule","competition"),
+M("Jack is very tired, so he decides to ___ in and read a book tonight.","stay","hang","take"),
+M("Sarah has a really busy ___ this week; she has piano practice every day.","schedule","field trip","pyjama party"),
+M("My cousins are coming to Kyiv tomorrow, so I am going to ___ them around the city.","show","see","shoot"),
+M("Max is clever and hard-working; he is going to take part in a Math ___ next Monday.","competition","camp","appointment"),
+M("On Friday evening, my parents are ___ friends over for a small dinner party.","having","seeing","staying"),
+M("We are really excited because our class is going on a field ___ to the science museum.","trip","camp","party"),
+M("Teenagers love to ___ out at the shopping center after school on Fridays.","hang","sleep","take"),
+M("Nina is not sleeping at home tonight; she is sleeping ___ at her best friend\'s house.","over","in","out")]},
+f2:{t:'Вправа 2. Діалоги',i:'Обери відповідь для Speaker B.',items:[
+M("A: «Are you busy tonight?»<br>B: «___! I am staying in to finish my school project.»","Yes, I am","Sounds great","Nice idea"),
+M("A: «Would you like to go to the cinema this evening?»<br>B: «___! What time does the movie start?»","Sounds great","I\'m sorry, I can\'t","I have plans"),
+M("A: «What are you doing after school today?»<br>B: «___. We booked the court yesterday.»","I am having tennis practice","I am seeing my dentist","I stay in bed"),
+M("A: «Why don\'t we hang out at the mall on Saturday?»<br>B: «___, but I\'m going to a birthday party then.»","I\'d love to","Yes, I am","That\'s wrong"),
+M("A: «How about going on a field trip to the zoo next week?»<br>B: «___! I love animals!»","That\'s a wonderful idea","Sorry, I can\'t","I am busy"),
+M("A: «Are you free on Friday afternoon?»<br>B: «___. I have to look after my younger brother.»","No, I am not","Yes, I am","It\'s great"),
+M("A: «Can you come to my house for a pyjama party tonight?»<br>B: «___! I need to ask my parents first.»","I\'d love to","Sorry, I can\'t","No, I am busy"),
+M("A: «What are your plans for the summer holidays?»<br>B: «___. I already bought my ticket.»","I\'m going to an English camp","I stay in tonight","I shoot a video"),
+M("A: «Let\'s meet at the cafe at 5 p.m.»<br>B: «___! See you there!»","Perfect","I have plans","I am not free"),
+M("A: «Would you like to come over for dinner tonight?»<br>B: «___. I have an appointment at the doctor\'s.»","I\'d love to, but I can\'t","Sounds great","Yes, I am free")]},
+g3:{t:'Вправа 3. Правильне речення (A/B)',i:'Яке речення правильне?',items:[
+E("I am meeting my friends at the mall tonight.","I am meet my friends at the mall tonight."),
+E("They are going on a field trip tomorrow morning.","They is going on a field trip tomorrow morning."),
+E("She is seeing her doctor at 4 p.m. on Tuesday.","She seeing her doctor at 4 p.m. on Tuesday."),
+E("We are not staying in tonight because we have tickets.","We are not stay in tonight because we have tickets."),
+E("Alex is taking part in an academic competition next week.","Alex is takeing part in an academic competition next week."),
+E("What are you doing this evening?","What do you doing this evening?"),
+E("My brother is sleeping over at his cousin\'s tonight.","My brother is sleep over at his cousin\'s tonight."),
+E("Are they shooting a video for their project tomorrow?","Do they shooting a video for their project tomorrow?"),
+E("I am not having tennis practice on Friday.","I am not have tennis practice on Friday."),
+E("She isn\'t coming to the party tonight.","She isn\'t come to the party tonight.")]},
+g4:{t:'Вправа 4. Утвори форму',i:'Впиши дієслово в Present Continuous (наприклад: am seeing, isn\'t going).',items:[
+["I ___ (see) my dentist tomorrow at 10 a.m.",["am seeing","\'m seeing","i\'m seeing"]],
+["They ___ (have) friends over for dinner this Friday.",["are having","\'re having","they\'re having"]],
+["Mark ___ (not / go) to the summer camp next month.",["is not going","isn\'t going","\'s not going","mark\'s not going"]],
+["What ___ tonight after school? (you / do)",["are you doing"]],
+["We ___ (shoot) a video for our English project on Saturday.",["are shooting","\'re shooting","we\'re shooting"]],
+["She ___ (not / sleep) over at her aunt\'s house tonight.",["is not sleeping","isn\'t sleeping","\'s not sleeping","she\'s not sleeping"]],
+["My parents ___ (buy) a new car this afternoon.",["are buying","\'re buying"]],
+["___ part in the competition tomorrow? (he / take)",["is he taking"]],
+["I ___ (not / stay) in tonight because I have tickets for the concert.",["am not staying","\'m not staying","i\'m not staying"]],
+["Emma ___ (show) her cousins around the city on Sunday.",["is showing","\'s showing","emma\'s showing"]]]},
+g5:{t:'Вправа 5. Граматика в контексті (A/B)',i:'Яке речення правильно вживає Present Continuous для домовленостей?',items:[
+E("My sister is driving to Lviv next weekend.","My sister is driveing to Lviv next weekend."),
+E("We are having a pyjama party tonight.","We am having a pyjama party tonight."),
+E("Are you going to the shopping mall after school?","You are going to the shopping mall after school?"),
+E("He isn\'t coming to practice on Thursday.","He doesn\'t coming to practice on Thursday."),
+E("They are running a marathon next Sunday morning.","They are runing a marathon next Sunday morning."),
+E("I am not seeing my doctor today.","I am not see my doctor today."),
+E("Is she having a class tomorrow at 5 p.m.?","Does she having a class tomorrow at 5 p.m.?"),
+E("We are not going out tonight because it is raining.","We are not go out tonight because it is raining."),
+E("Tom is showing his friends around the museum this afternoon.","Tom is show his friends around the museum this afternoon."),
+E("Are they sleeping over at their friend\'s house tonight?","Are they sleep over at their friend\'s house tonight?")]}
+};
+const SP=[
+{id:'s0',t:'📞 Картка 1: Вільний вікенд',a:'<b>Ситуація:</b> учень A телефонує учню B, щоб дізнатись про плани на вікенд.<br><b>Учень A:</b> спитай, чи вільний B сьогодні ввечері або в суботу. Запропонуй погуляти в ТРЦ.',b:'<b>Учень B:</b> скажи, що в суботу зайнятий(-а), бо в тебе гості, але ввечері вільний(-а).<br><i>Готово, коли: обидва поставили й відповіли щонайменше на два запитання.</i>',ph:'«зайнятий сьогодні ввечері» · «погуляти» · «піти в ТРЦ» · «приймати друзів вдома»'},
+{id:'s1',t:'🌙 Картка 2: Ночівля',a:'<b>Ситуація:</b> учні обговорюють плани на вечір п’ятниці.<br><b>Учень A:</b> запроси B переночувати в тебе й подивитись фільми.',b:'<b>Учень B:</b> із радістю погодься й спитай, о котрій приходити.<br><i>Готово, коли: A запросив(-ла), B погодився(-лась) і назвали точний час.</i>',ph:'«ночувати в когось» · «залишатися вдома» · «сьогодні ввечері» · «чудово!»'},
+{id:'s2',t:'🎬 Картка 3: Відео для проєкту',a:'<b>Ситуація:</b> учні мають разом зробити шкільний проєкт.<br><b>Учень A:</b> запропонуй завтра вдень зняти відео для проєкту з науки.',b:'<b>Учень B:</b> відмов, бо в тебе тренування з плавання, але запропонуй зустрітись після 18:00.<br><i>Готово, коли: A запропонував(-ла) час, а B домовився(-лась) про інший.</i>',ph:'«зняти відео» · «шкільний проєкт» · «мати тренування» · «вибач, я не можу»'},
+{id:'s3',t:'🍕 Картка 4: Двоюрідний брат у місті',a:'<b>Ситуація:</b> до учня B приїхав у гості двоюрідний брат із іншого міста.<br><b>Учень A:</b> запроси B піти сьогодні ввечері на піцу.',b:'<b>Учень B:</b> поясни, що показуєш кузену місто, але запроси A приєднатись.<br><i>Готово, коли: B пояснив(-ла) свій план і запросив(-ла) A.</i>',ph:'«піти гуляти» · «показувати місто» · «сьогодні ввечері» · «чи не хотів(-ла) б ти…»'},
+{id:'s4',t:'🎒 Картка 5: Екскурсія',a:'<b>Ситуація:</b> учні говорять про завтрашню шкільну екскурсію.<br><b>Учень A:</b> спитай B, що він(вона) бере із собою на екскурсію до наукового музею.',b:'<b>Учень B:</b> скажи, о котрій відходить автобус і що ти береш.<br><i>Готово, коли: обидва назвали щонайменше дві деталі про поїздку.</i>',ph:'«їхати на екскурсію» · «розклад» · «пакувати одяг» · «що ти робиш?»'},
+{id:'s5',t:'🏆 Картка 6: Олімпіада',a:'<b>Ситуація:</b> учень A готується до олімпіади з математики.<br><b>Учень B:</b> спитай A, чи хоче він(вона) піти сьогодні в кіно.',b:'<b>Учень A:</b> поясни, що завтра береш участь в олімпіаді й маєш вчитись.<br><i>Готово, коли: A ввічливо відмовив(-ла) й розповів(-ла) про підготовку.</i>',ph:'«брати участь» · «олімпіада» · «залишатись вдома» · «в мене плани»'},
+{id:'s6',t:'🎂 Картка 7: Запрошення на день народження',a:'<b>Ситуація:</b> учень A влаштовує вечірку на цю суботу.<br><b>Учень A:</b> запроси B на день народження о 17:00.',b:'<b>Учень B:</b> зрадій, прийми запрошення й спитай, чи можна принести закуски.<br><i>Готово, коли: A назвав(-ла) деталі, а B підтвердив(-ла).</i>',ph:'«іти на день народження» · «чудово!» · «що ти робиш?» · «закуски»'},
+{id:'s7',t:'🌲 Картка 8: Літній табір',a:'<b>Ситуація:</b> учні говорять про плани на літо.<br><b>Учень A:</b> спитай B, чи їде він(вона) цього року в літній табір.',b:'<b>Учень B:</b> скажи, що їдеш в англійський табір у липні й спатимеш у наметах.<br><i>Готово, коли: обидва розповіли по одній деталі про табір.</i>',ph:'«їхати в табір» · «вижити в лісі» · «наступного місяця» · «а як щодо…»'},
+{id:'s8',t:'📅 Картка 9: Зайнятий розклад',a:'<b>Ситуація:</b> учні порівнюють тижневі розклади.<br><b>Учень A:</b> спитай B, чому його(її) розклад цього тижня такий насичений.',b:'<b>Учень B:</b> назви три справи цього тижня (лікар, тренування, зустріч із друзями).<br><i>Готово, коли: B назвав(-ла) щонайменше три домовлені події.</i>',ph:'«розклад» · «зустрітись із кимось» · «мати урок» · «візит до лікаря»'},
+{id:'s9',t:'🌳 Картка 10: Несподіване запрошення',a:'<b>Ситуація:</b> учень A хоче погуляти після школи.<br><b>Учень A:</b> запропонуй піти після школи в новий парк.',b:'<b>Учень B:</b> відмов, бо залишаєшся вдома й дивишся за молодшим братом.<br><i>Готово, коли: A запропонував(-ла) заняття, а B ввічливо відмовив(-ла) з чіткою причиною.</i>',ph:'«погуляти» · «залишатись вдома» · «чому б нам не…» · «вибач, я не можу»'},
+{id:'m0',np:1,t:'🎈 Макро-сценарій 1: Сюрприз-вечірка',a:'<b>Контекст:</b> ви готуєте сюрприз-вечірку для однокласника Сема.<br><b>Учень A:</b> хочеш влаштувати її вдома в п’ятницю ввечері. Запропонуй купити прикраси й попкорн.',b:'<b>Учень B:</b> погоджуєшся, але пропонуєш спочатку зняти відео-монтаж і щоб усі залишились ночувати.<br><i>План розмови: привітання й мета → дата, час і місце (Present Continuous) → їжа, прикраси, розваги → остаточні домовленості й розподіл завдань.</i>',ph:'«ми влаштовуємо вечірку в п’ятницю» · «ми купуємо прикраси» · «усі ночують у мене»'},
+{id:'m1',np:1,t:'🧭 Макро-сценарій 2: Друг-екскурсовод',a:'<b>Контекст:</b> учень B вперше приїхав у місто учня A.<br><b>Учень A:</b> господар. Запропонуй завтра показати B торговий центр та історичні місця.',b:'<b>Учень B:</b> гість. Став запитання про розклад і запропонуй, що хочеш побачити.<br><i>План розмови: привітайте друга й спитайте про дорогу → розклад на завтра (Present Continuous) → обід чи покупки в ТРЦ → час зустрічі.</i>',ph:'«ми відвідуємо…» · «я показую тобі місто» · «о котрій ми зустрічаємось?»'},
+{id:'m2',np:1,t:'🎸 Макро-сценарій 3: Перенесення репетиції',a:'<b>Контекст:</b> у вас сьогодні вечірня репетиція, але в A зірвались плани.<br><b>Учень A:</b> зателефонуй B і поясни, що йдеш сьогодні до стоматолога й не можеш прийти.',b:'<b>Учень B:</b> прояви розуміння й запропонуй перенести репетицію на четвер після обіду.<br><i>План розмови: дзвінок і зміна планів → ввічлива відмова → новий день і час → підтвердження.</i>',ph:'«вибач, я не можу» · «я йду до стоматолога» · «а як щодо четверга?»'},
+{id:'d0',np:1,t:'🏠 Дискусія 1: Вдома чи гуляти',a:'<b>Питання:</b> що краще на вихідних: залишатись вдома чи гуляти з друзями?<br><b>Команда «Вдома»:</b> відпочинок, заощадження, хобі; не залежиш від погоди й розкладу.<br><b>Команда «Гуляти»:</b> нові місця, спогади, соціальні навички й настрій.<br>Як ти вирішуєш, що робити в п’ятницю ввечері? Яким був би твій ідеальний вікенд з друзями?',b:'',ph:'«проводити час удома» · «гуляти з друзями» · «якісний час разом» · «насичений розклад»'},
+{id:'d1',np:1,t:'📚 Дискусія 2: Олімпіади і стрес',a:'<b>Питання:</b> чи мають усі школярі брати участь в олімпіадах?<br><b>За:</b> мотивація, перевірка знань, впевненість і користь для вступу.<br><b>Проти (обов’язкові):</b> стрес і тривога; краще займатись тим, що цікаво, без тиску.<br>Чи брав(-ла) ти участь в олімпіаді? Що відчував(-ла)? Як підготуватись без стресу?',b:'',ph:'«брати участь у змаганнях» · «відчувати стрес» · «отримати цінний досвід»'},
+{id:'d2',np:1,t:'🌲 Дискусія 3: Табір чи сімейна подорож',a:'<b>Питання:</b> чи кращий літній табір за сімейну подорож для підлітка?<br><b>Табір:</b> самостійність, нові друзі, командна робота й лідерство.<br><b>Сімейна подорож:</b> міцніші родинні зв’язки, комфортний розклад, безпека.<br>Що б ти обрав(-ла): спати в наметі в таборі чи жити в готелі з родиною? Чого можна навчитись, прожив(ши) тиждень без дому?',b:'',ph:'«їхати в літній табір» · «розвивати самостійність» · «проводити час із родиною»'}
+];
+const SPPTS=10,$=(s,e=document)=>e.querySelector(s);
+let S={};try{S=JSON.parse(localStorage.getItem('u94')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('u94',JSON.stringify(S))}catch(e){}};
+const norm=s=>s.toLowerCase().replace(/[’‘`]/g,"'").replace(/[?.!]/g,'').replace(/\s+/g,' ').trim();
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function mkItem(id,i){
+ const [q,a,o,w]=EX[id].items[i],key=id+i,el=document.createElement('div');let tries=0;
+ el.className='item';
+ el.innerHTML=`<div class="n">${i+1}</div><div class="b"><p class="q">${q.replace('___','<span class="blank"></span>')}</p><div class="ctl"></div><p class="fb"></p></div>`;
+ const ctl=$('.ctl',el),fb=$('.fb',el);
+ const show=(p,ok)=>{el.classList.add(ok?'ok':'bad');ctl.innerHTML='';fb.innerHTML=(ok?`✅ +${p} б. `:`❌ Правильна відповідь: <b>${a[0]}</b>. `)+(w||'')};
+ if(S[key]!=null){show(S[key],S[key]>0);return el}
+ const check=v=>{
+  if(a.map(norm).includes(norm(v))){S[key]=tries?5:10;save();show(S[key],1);upd()}
+  else if(tries++){S[key]=0;save();show(0,0);upd()}
+  else fb.textContent='🤔 Не зовсім. Спробуй ще раз — за другу спробу 5 балів.';
+ };
+ if(o){shuf(o).forEach(t=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>{b.disabled=true;check(t)};ctl.append(b)})}
+ else{const inp=document.createElement('input'),b=document.createElement('button');inp.placeholder='Твоя відповідь';inp.autocomplete='off';inp.setAttribute('aria-label','Відповідь');b.textContent='Перевірити';b.className='go';
+  const go=()=>{if(inp.value.trim())check(inp.value)};b.onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()};ctl.append(inp,b)}
+ return el;
+}
+function build(){
+ const nav=$('#nav'),main=$('#main');nav.innerHTML='';main.innerHTML='';
+ TABS.forEach((t,k)=>{
+  const b=document.createElement('button');b.textContent=t.name;b.dataset.t=t.id;b.onclick=()=>open(t.id);nav.append(b);
+  const p=document.createElement('section');p.className='panel';p.id='p-'+t.id;p.innerHTML=`<div class="intro">${t.intro}</div>`;
+  t.ex.forEach(id=>{const e=EX[id],d=document.createElement('div');d.className='ex';d.id='ex-'+id;
+   d.innerHTML=`<span class="sc"></span><h2>${e.t}</h2><p class="ins">${e.i}</p>`;
+   e.items.forEach((_,i)=>d.append(mkItem(id,i)));p.append(d)});
+  if(t.id==='speak')SP.forEach(s=>{const c=document.createElement('div');c.className='card';
+   c.innerHTML=`<h3>${s.t}</h3><div class="who">${s.a}</div>${s.b?`<div class="who">${s.b}</div>`:''}<p class="ph">💬 Скажи англійською: ${s.ph}</p>${s.np?'<p class="np">Без балів, для практики</p>':`<label class="chk"><input type="checkbox" ${S[s.id]?'checked':''}> Ми це зробили (+${SPPTS} б.)</label>`}`;
+   const ck=$('input',c);if(ck)ck.onchange=e=>{if(e.target.checked)S[s.id]=SPPTS;else delete S[s.id];save();upd()};p.append(c)});
+  const nx=document.createElement('div');nx.className='next';
+  if(TABS[k+1]){const nb=document.createElement('button');nb.textContent='Далі: '+TABS[k+1].name+' →';nb.onclick=()=>open(TABS[k+1].id);nx.append(nb)}else nx.textContent='🎉 Це був останній розділ. Молодець!';
+  p.append(nx);main.append(p)});
+ open(TABS[0].id);upd();
+}
+function open(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));scrollTo(0,0)}
+function upd(){
+ let tot=0,max=0;
+ TABS.forEach(t=>{let done=true;
+  t.ex.forEach(id=>{const n=EX[id].items.length;let s=0,c=0;for(let i=0;i<n;i++){if(S[id+i]!=null){s+=S[id+i];c++}}
+   tot+=s;max+=n*10;if(c<n)done=false;$('#ex-'+id+' .sc').textContent=`${s} / ${n*10}`});
+  if(t.id==='speak'){SP.filter(s=>!s.np).forEach(s=>{max+=SPPTS;if(S[s.id])tot+=SPPTS;else done=false})}
+  $(`nav button[data-t="${t.id}"]`).classList.toggle('full',done)});
+ $('#pts').textContent=tot;$('#max').textContent=max;$('#fill').style.width=(max?tot/max*100:0)+'%';
+ const r=max?tot/max:0;$('#rank').textContent=r>=.9?'🏆 Майстер шопінгу':r>=.7?'🥇 Чудово!':r>=.4?'🥈 Гарний прогрес':r>0?'🌱 Початок є':'';
+}
+$('#reset').onclick=()=>{if(confirm('Скинути всі бали й відповіді?')){S={};save();build()}};
+build();
+</script>
+</body>
+</html>
